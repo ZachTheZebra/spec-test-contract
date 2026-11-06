@@ -35,6 +35,8 @@ The mapping rules live in `docs/mapping-format.md` when this repo is the workspa
 | `FAIL test` | The test ran and raised. Fix the test or the behavior it calls. Do not delete the invariant. |
 | `FAIL tlc` | TLC rejected the model. The tail of the TLC log is the evidence. Do not weaken the invariant to silence it. |
 | `note: PROPERTY` | A liveness or action property is present. It is outside the contract. Mention it. Do not fail the contract for it. |
+| `checked_by: tlc` | TLC owns that invariant. It still has to be listed. Do not ask for a test. A behavior the product has to show still needs one. |
+| `note:` a shared test | One test is the only test for several invariants. Report the note. Do not fail the run for it. |
 
 ## Report shape
 

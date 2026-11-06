@@ -41,8 +41,11 @@ def write_case(directory, cfg_body, invariants, tests):
         "        invariants:",
     ]
     for name, test_names in invariants:
-        rendered = ", ".join(test_names)
         lines.append(f"          - name: {name}")
+        if test_names == "tlc":
+            lines.append("            checked_by: tlc")
+            continue
+        rendered = ", ".join(test_names)
         lines.append(f"            tests: [{rendered}]")
     mapping = root / "spec_coverage.yaml"
     mapping.write_text("\n".join(lines) + "\n", encoding="utf-8")
@@ -53,7 +56,7 @@ class CheckCoverageTest(unittest.TestCase):
     def test_example_passes_from_another_directory(self):
         result = run_checker(["--mapping", str(EXAMPLE)], cwd=Path("/"))
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-        self.assertIn("1 model, 7 invariants, 7 tests", result.stdout)
+        self.assertIn("1 model, 7 invariants, 6 tests", result.stdout)
 
     def test_discover_finds_the_example(self):
         result = run_checker(["--root", str(ROOT / "examples")])
@@ -124,6 +127,60 @@ class CheckCoverageTest(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertIn("PROPERTY Completion", result.stdout)
         self.assertNotIn("NotReal", result.stdout)
+
+    def test_tlc_owned_invariant_needs_no_test(self):
+        with tempfile.TemporaryDirectory() as directory:
+            mapping = write_case(
+                directory,
+                "INVARIANT TypeOK\nINVARIANT Kept\n",
+                [("TypeOK", "tlc"), ("Kept", ["test_kept"])],
+                {"test_kept": "assert True"},
+            )
+            result = run_checker(["--mapping", str(mapping)])
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("1 model, 2 invariants, 1 test", result.stdout)
+
+    def test_tlc_owned_invariant_cannot_vanish(self):
+        with tempfile.TemporaryDirectory() as directory:
+            mapping = write_case(
+                directory,
+                "INVARIANT TypeOK\nINVARIANT Kept\n",
+                [("Kept", ["test_kept"])],
+                {"test_kept": "assert True"},
+            )
+            result = run_checker(["--mapping", str(mapping)])
+        self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+        self.assertIn("invariant TypeOK is not in the contract", result.stdout)
+
+    def test_checked_by_tlc_rejects_a_test_list(self):
+        with tempfile.TemporaryDirectory() as directory:
+            mapping = write_case(
+                directory,
+                "INVARIANT TypeOK\n",
+                [("TypeOK", "tlc")],
+                {},
+            )
+            text = mapping.read_text(encoding="utf-8")
+            text = text.replace("checked_by: tlc", "checked_by: tlc\n            tests: [test_type_ok]")
+            mapping.write_text(text, encoding="utf-8")
+            result = run_checker(["--mapping", str(mapping)])
+        self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
+        self.assertIn("has no test list", result.stderr)
+
+    def test_shared_sole_test_is_a_note(self):
+        with tempfile.TemporaryDirectory() as directory:
+            mapping = write_case(
+                directory,
+                "INVARIANT WindowBoundary\nINVARIANT ExpiredNotCounted\n",
+                [("WindowBoundary", ["test_window"]), ("ExpiredNotCounted", ["test_window"])],
+                {"test_window": "assert True"},
+            )
+            result = run_checker(["--mapping", str(mapping)])
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn(
+            "note: test_window is the only test for WindowBoundary, ExpiredNotCounted",
+            result.stdout,
+        )
 
     def test_empty_tree_exits_two(self):
         with tempfile.TemporaryDirectory() as directory:

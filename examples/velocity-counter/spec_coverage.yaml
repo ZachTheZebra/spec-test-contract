@@ -9,7 +9,7 @@ specs:
       - config: models/small.cfg
         invariants:
           - name: TypeOK
-            tests: [test_type_ok]
+            checked_by: tlc
           - name: RouteShape
             tests: [test_route_shape]
           - name: OnlyRouted

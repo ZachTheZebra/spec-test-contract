@@ -2,7 +2,7 @@
 
 A product person does not have to write TLA+. They agree what the system is allowed to do, and they hand the team a packet a person or a coding agent can finish. Each step below is an existing skill. This repo owns the two steps that keep the rules and the tests tied together. The other skills stay in their own repos.
 
-A person starts the product steps by name (`/grill-with-docs`, `/to-spec`, `/statechart`). The coverage check and the test loop can start on their own once the files exist.
+A person starts the product steps by name (`/grill-with-docs`, `/to-spec`, `/statechart`). The coverage check and the test loop can start on their own once the files exist. When the `.tla`, the `.cfg`, and the code already exist, start at the coverage check. Do not restart the interview.
 
 ## The path
 

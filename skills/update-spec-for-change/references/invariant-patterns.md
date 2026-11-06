@@ -45,7 +45,7 @@ Check liveness in its own config: `SPECIFICATION FairSpec` and `PROPERTY Complet
 
 | Change | Module | Config | Contract |
 |---|---|---|---|
-| A state that must never happen | `Name == <state predicate>` | `INVARIANT Name` in the safety cfg | `name: Name` plus a test |
+| A state that must never happen | `Name == <state predicate>` | `INVARIANT Name` in the safety cfg | a test, or `checked_by: tlc` when the model has to remember that state |
 | A step that must preserve a fact | `Name == [][<action>]_vars` | `PROPERTY Name` | no invariant entry; optional safety predicate for the testable core |
 | Something that eventually happens | property under `FairSpec` | `PROPERTY Name` in the liveness cfg | no invariant entry |
 
@@ -55,4 +55,4 @@ Constants such as `MaxEvents`, `Retention`, and `MaxNow` define the finite model
 
 ## Names
 
-Match the style of the module you are editing. Prefer a word for the obligation (`ExpiredNotCounted`, `OnlyRouted`) over a word for the ticket (`Bug1432`, `NewCheck`). The test name follows: `test_expired_not_counted`.
+Match the style of the module you are editing. Prefer a word for the obligation (`ExpiredNotCounted`, `OnlyRouted`) over a word for the ticket (`Bug1432`, `NewCheck`). A new test can be named `test_` plus that name in snake case. An existing test keeps its name.

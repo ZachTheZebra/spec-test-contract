@@ -11,11 +11,13 @@ A product change that never reaches the spec leaves the model describing yesterd
 The contract file is the source of truth for how an invariant is recorded. When `docs/mapping-format.md` is in the workspace, follow it. The shape to append is:
 
 ```yaml
+- name: TypeOK
+  checked_by: tlc
 - name: InvariantName
-  tests: [test_invariant_name]
+  tests: [existing_test_name]
 ```
 
-Test names are `test_` plus the invariant name in snake case.
+A new behavior invariant can default to `test_` plus the snake-case name when no test covers it yet. An existing test keeps its name. Do not invent a second suite whose names mirror the invariant list. A rule about state the model has to remember, such as a type invariant or a variable that exists only in the spec, is `checked_by: tlc` and has no test list.
 
 ## What to read first
 
@@ -36,7 +38,7 @@ Read [references/invariant-patterns.md](references/invariant-patterns.md) before
    ```
 
    Run it when the user asks. Java 11+ is required. Set `JAVA` when `java` is not on `PATH`. Report a pass only when the output contains `No error has been found` or `contract ok`.
-6. Update `spec_coverage.yaml` for each new or renamed safety invariant, with a placeholder test name. Leave the placeholder unimplemented. The coverage check is supposed to fail until a real test exists. Do not add `assert True` to turn the check green.
+6. Update `spec_coverage.yaml` for each new or renamed safety invariant. Name the existing test when one already fails if the behavior breaks. Otherwise use `test_` plus the snake-case name and leave that function unimplemented, so the check stays red until a test calls the implementation. Do not add `assert True`, and do not copy the formula into the test. A bookkeeping invariant is `checked_by: tlc` and lists no test.
 
 ## Proposal shape
 

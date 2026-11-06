@@ -24,7 +24,7 @@ pip install -r requirements.txt
 python scripts/check_coverage.py --mapping examples/velocity-counter/spec_coverage.yaml
 ```
 
-That command checks the worked example. The example is the VelocityCounter module from [osprey-velocity-counter](https://github.com/ZachTheZebra/osprey-velocity-counter): one event names two keys, a crash can fall between them, and an API event is stored on the api-client key rather than the user key. `examples/velocity-counter/models/small.cfg` lists the seven safety invariants. `examples/velocity-counter/spec_coverage.yaml` maps each one to a test in `examples/velocity-counter/tests/test_counter_rules.py`. Those tests restate the rules as Python predicates, which is enough to show the contract. A production repo points the same file at the tests that exercise the real implementation.
+That command checks the worked example. The tests call `examples/velocity-counter/counter.py`. `TypeOK` is left to TLC. The other invariants name those tests. The formulas stay in the `.tla` file.
 
 To run TLC as well, install Java 11 or newer and add `--tlc`. Set `JAVA` when the `java` binary is not on `PATH`.
 
@@ -35,7 +35,26 @@ python scripts/check_coverage.py --mapping examples/velocity-counter/spec_covera
 A green run prints one line:
 
 ```text
-contract ok: examples/velocity-counter/spec_coverage.yaml: 1 model, 7 invariants, 7 tests
+contract ok: examples/velocity-counter/spec_coverage.yaml: 1 model, 7 invariants, 6 tests
+```
+
+## Use this on your repo
+
+When the `.tla`, the `.cfg`, and the code already exist, start at the coverage check. Do not restart the interview.
+
+From a checkout of this tool, run the script with the Python that has the project's dependencies installed, and point it at their file:
+
+```bash
+python scripts/check_coverage.py --mapping path/to/spec_coverage.yaml --tlc
+```
+
+The mapped functions run in that Python. A missing dependency fails the run the way `No module named 'redis'` does. Install those dependencies in that interpreter before the check.
+
+The workflow in this repo only checks the example. A job in the other repo is the same command:
+
+```yaml
+- name: Check the spec-to-test contract
+  run: python scripts/check_coverage.py --mapping path/to/spec_coverage.yaml --tlc
 ```
 
 ## End-to-end on a change

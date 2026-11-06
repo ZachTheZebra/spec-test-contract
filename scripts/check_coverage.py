@@ -129,12 +129,25 @@ def load_mapping(path: Path) -> dict:
             if not isinstance(model["invariants"], list):
                 raise ContractError(f"{path} invariants must be a list")
             for item in model["invariants"]:
-                if not isinstance(item, dict) or "name" not in item or "tests" not in item:
-                    raise ContractError(f"{path} each invariant needs name and tests")
-                tests = item["tests"]
-                if not isinstance(tests, list) or not all(isinstance(test, str) for test in tests):
-                    raise ContractError(f"{path} invariant {item.get('name')} tests must be a list of names")
+                if not isinstance(item, dict) or "name" not in item:
+                    raise ContractError(f"{path} each invariant needs a name")
+                _require_invariant_owner(path, item)
     return data
+
+
+def _require_invariant_owner(path: Path, item: dict) -> None:
+    name = item.get("name")
+    checked_by = item.get("checked_by")
+    has_tests = "tests" in item
+    if checked_by == "tlc":
+        if has_tests:
+            raise ContractError(f"{path} invariant {name} is checked by TLC and has no test list")
+        return
+    if checked_by is not None:
+        raise ContractError(f"{path} invariant {name} checked_by must be tlc")
+    tests = item.get("tests")
+    if not isinstance(tests, list) or not all(isinstance(test, str) for test in tests):
+        raise ContractError(f"{path} invariant {name} needs tests or checked_by: tlc")
 
 
 def index_tests(tests_root: Path) -> Dict[str, Path]:
@@ -289,15 +302,20 @@ def check_mapping(
                     f"note: PROPERTY {prop} in {cfg_display} is a TLC property, not a contract invariant"
                 )
             mapped = []
+            sole_test: Dict[str, List[str]] = {}
             for item in model["invariants"]:
                 invariant_count += 1
                 name = item["name"]
                 if name not in mapped:
                     mapped.append(name)
-                test_names = item["tests"]
+                if item.get("checked_by") == "tlc":
+                    continue
+                test_names = item.get("tests") or []
                 if not test_names:
                     failures.append(f"FAIL invariant {name} in {cfg_display} lists no tests")
                     continue
+                if len(test_names) == 1:
+                    sole_test.setdefault(test_names[0], []).append(name)
                 for test_name in test_names:
                     hit = tests.get(test_name)
                     if hit is None:
@@ -311,6 +329,9 @@ def check_mapping(
                     problem = run_python_test(hit, test_name, loaded)
                     if problem:
                         failures.append(problem)
+            for test_name, owners in sole_test.items():
+                if len(owners) > 1:
+                    print(f"note: {test_name} is the only test for {', '.join(owners)}")
             declared_set = set(declared)
             mapped_set = set(mapped)
             for name in declared:
