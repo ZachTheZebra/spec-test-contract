@@ -1,0 +1,24 @@
+# Spec-to-test contract for the bounded VelocityCounter model.
+# Paths are relative to this file. See docs/mapping-format.md.
+
+model_checker: tlc
+specs:
+  - name: VelocityCounter
+    tla: VelocityCounter.tla
+    models:
+      - config: models/small.cfg
+        invariants:
+          - name: TypeOK
+            tests: [test_type_ok]
+          - name: RouteShape
+            tests: [test_route_shape]
+          - name: OnlyRouted
+            tests: [test_only_routed]
+          - name: RecordedAgrees
+            tests: [test_recorded_agrees]
+          - name: WindowBoundary
+            tests: [test_window_boundary]
+          - name: ExpiredNotCounted
+            tests: [test_expired_not_counted]
+          - name: CountMatches
+            tests: [test_count_matches]
