@@ -1,0 +1,17 @@
+[
+  {"query": "We just changed the product so an API call should not tick the IP counter. Update the TLA+ spec before we touch the Lua script.", "should_trigger": true},
+  {"query": "Bug: a message that was still inside the 5 minute window disappeared after cleanup. What invariant are we missing in VelocityCounter.tla?", "should_trigger": true},
+  {"query": "The PRD says a hold flag blocks cleanup until the case is closed. The formal spec still lets Cleanup remove those ticks. Propose the formula.", "should_trigger": true},
+  {"query": "Incident review: a redelivery double-counted one event on the same key. Check the spec and tell me whether the invariants already forbid that.", "should_trigger": true},
+  {"query": "Feature request from payments: the window should be exclusive on the left edge. Does our TLA+ model still match, and what should we change if it does not?", "should_trigger": true},
+  {"query": "A worker can crash after writing the user key and before the IP key. I want a liveness property that says retry eventually finishes the missing key.", "should_trigger": true},
+  {"query": "Here is the failing trace from TLC. The invariant we added last week is too strong. Help me restate it so it matches the new requirement without dropping the old one.", "should_trigger": true},
+  {"query": "Product wants api-client traffic to share the IP counter again. Walk the spec and draft the invariant diff plus the spec_coverage.yaml entry.", "should_trigger": true},
+  {"query": "Before we merge, check that every invariant in the cfg has a unit test. CI is red on spec_coverage.yaml.", "should_trigger": false},
+  {"query": "Write the Redis Lua script for a sliding-window ZADD. The spec is already done.", "should_trigger": false},
+  {"query": "Add a Python unit test for the window boundary in the counter. The formula in the spec is not changing.", "should_trigger": false},
+  {"query": "Is TLC installed on this laptop, and which Java do I have?", "should_trigger": false},
+  {"query": "Explain what TLA+ is to a new hire who has never seen a model checker.", "should_trigger": false},
+  {"query": "Format the README and fix the broken markdown table.", "should_trigger": false},
+  {"query": "Review this pull request for naming and type hints. It does not touch the formal spec.", "should_trigger": false}
+]

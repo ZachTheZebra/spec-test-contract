@@ -1,0 +1,53 @@
+{
+  "skill_name": "update-spec-for-change",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Bug report: cleanup removed a tick that was still inside the retention window. The spec is examples/velocity-counter/VelocityCounter.tla and the config is examples/velocity-counter/models/small.cfg. Propose the spec change. Do not edit the Python tests yet.",
+      "expected_output": "A proposal that names an action property in the shape of ActivePreserved, places it after the window operators, and says a PROPERTY line is not a spec_coverage.yaml invariant. It may also propose a safety predicate for the testable core. It does not delete or weaken WindowBoundary or ExpiredNotCounted.",
+      "files": [],
+      "expectations": [
+        "The proposal quotes or names the existing window formulas before adding a new one",
+        "The new formula uses a primed next-state variable for the tick that must remain",
+        "The proposal tells the user which cfg file receives the line",
+        "The proposal does not remove an existing INVARIANT to make the bug disappear",
+        "The proposal offers to run TLC and does not claim the model passed"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Product change: an API call should no longer tick the IP counter. It should tick only the api-client key. Human traffic still ticks user and IP. Update the VelocityCounter spec and the spec-to-test contract.",
+      "expected_output": "A revised RouteShape (or a successor formula) for both populations, an INVARIANT line, and a spec_coverage.yaml entry whose test name is not implemented yet.",
+      "files": [],
+      "expectations": [
+        "The formula states the api route and the human route",
+        "The human route still contains the IP key",
+        "The contract entry uses a test_ snake-case name and does not include an assert True test",
+        "The proposal names models/small.cfg as the config to edit"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "We are seeing a liveness bug. A worker crashes forever between the two keys of one event, and that event never finishes. The safety invariants all pass. What should change in the spec?",
+      "expected_output": "A liveness proposal: strong fairness on the deliver and per-key apply actions, Completion (or an equivalent) as a PROPERTY of FairSpec, and no new invariants entry.",
+      "files": [],
+      "expectations": [
+        "The proposal distinguishes safety invariants from the liveness property",
+        "Fairness is strong fairness on a specific action, not a blanket weak fairness on Next",
+        "Crash, clock advance, and cleanup stay unfair",
+        "The contract section says there is no new invariant entry"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Feature request from support: the same event id was written twice and the count went up by two. Please add a new invariant so this can never happen. The current model stores ticks as sets.",
+      "expected_output": "The skill notices that a set cannot store the same id twice, names the existing behavior, and does not add a duplicate invariant that TLC cannot violate inside this model.",
+      "files": [],
+      "expectations": [
+        "The answer says the duplicate is unrepresentable while ticks is a set",
+        "The answer does not add a second invariant that only restates set union",
+        "The answer says what would have to change in the model before a new invariant would be meaningful"
+      ]
+    }
+  ]
+}

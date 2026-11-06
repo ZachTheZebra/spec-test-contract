@@ -1,0 +1,50 @@
+{
+  "skill_name": "check-invariant-coverage",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I added INVARIANT NoNegativeCounts to examples/velocity-counter/models/small.cfg and I have not touched spec_coverage.yaml. Check the contract before I open the PR.",
+      "expected_output": "The checker is run, the exit code is non-zero, and the report quotes a FAIL missing mapping line for NoNegativeCounts. The fix is to add a mapping entry and a real test, or to remove the INVARIANT line if it was not meant to ship.",
+      "files": [],
+      "expectations": [
+        "The skill runs scripts/check_coverage.py rather than only eyeballing the yaml",
+        "The report includes the invariant name NoNegativeCounts",
+        "The report does not claim the contract passed",
+        "The suggested fix does not delete an unrelated invariant"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "spec_coverage.yaml maps WindowBoundary to test_window_boundary, but that function does not exist anywhere under tests/. What is wrong, and what is the smallest fix?",
+      "expected_output": "A FAIL missing test line for test_window_boundary, and a fix that adds the function or corrects the name. The fix is not an assert True placeholder presented as done.",
+      "files": [],
+      "expectations": [
+        "The report quotes FAIL missing test",
+        "The suggested test is a real check of the window rule",
+        "The skill does not remove WindowBoundary from the config to go green"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "CI failed in the coverage job. The log says FAIL test test_count_matches: expected 2, got 3. The invariant CountMatches has been in the model for weeks. What should I change?",
+      "expected_output": "The test or the implementation is the thing to fix. The invariant stays. The report quotes the FAIL test line.",
+      "files": [],
+      "expectations": [
+        "The report quotes the FAIL test line including the assertion text",
+        "The suggested edit is in the test or the code under test",
+        "The answer does not weaken or delete CountMatches"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Run the spec-to-test contract on examples/velocity-counter/spec_coverage.yaml and tell me whether we can merge.",
+      "expected_output": "A pass report based on the checker's contract ok line for 1 model, 7 invariants, and 7 tests. No new invariants are proposed.",
+      "files": [],
+      "expectations": [
+        "The command is the coverage checker against that mapping file",
+        "A pass is reported only together with exit code 0",
+        "The report does not propose additional formulas"
+      ]
+    }
+  ]
+}

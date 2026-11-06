@@ -1,0 +1,16 @@
+[
+  {"query": "Before we merge the spec PR, check that every invariant in the cfg has a unit test.", "should_trigger": true},
+  {"query": "spec_coverage.yaml is failing CI. What's missing?", "should_trigger": true},
+  {"query": "I added INVARIANT NoNegativeCounts to Safety.cfg. Did I update the contract, and do the mapped tests actually pass?", "should_trigger": true},
+  {"query": "Validate the spec-to-test contract on examples/velocity-counter and paste the FAIL lines.", "should_trigger": true},
+  {"query": "The coverage job is red after I renamed test_window_boundary. Figure out which mapping entry is stale or missing.", "should_trigger": true},
+  {"query": "We are about to tag a release. Run the invariant coverage checker with TLC and block the tag if it is not green.", "should_trigger": true},
+  {"query": "Someone removed RecordedAgrees from the cfg but left it in the yaml. Report the contract status.", "should_trigger": true},
+  {"query": "Does models/small.cfg still match spec_coverage.yaml? I want the checker output, not a redesign.", "should_trigger": true},
+  {"query": "Bug: cleanup deleted a live tick. Propose a new invariant and where it should go in the module.", "should_trigger": false},
+  {"query": "Write a TLA+ model of our checkout flow from scratch. We do not have a spec yet.", "should_trigger": false},
+  {"query": "Run the full pytest suite for the web app and fix the login failures. There is no formal spec in this repo.", "should_trigger": false},
+  {"query": "Deploy the worker to production and confirm the pods rolled.", "should_trigger": false},
+  {"query": "Explain the difference between a safety invariant and a liveness property to me, no files need to change.", "should_trigger": false},
+  {"query": "Refactor the Lua script for readability. Keep the behavior. The spec is frozen for this PR.", "should_trigger": false}
+]
