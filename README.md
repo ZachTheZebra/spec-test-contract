@@ -11,6 +11,8 @@ npx skills add ZachTheZebra/spec-test-contract --skill check-invariant-coverage
 
 `update-spec-for-change` reads the current spec and proposes new or modified invariants for a requirement, feature request, or bug. `check-invariant-coverage` runs the checker and reports missing mappings, missing tests, failing tests, and TLC failures. The two skills can later be upstreamed to [tlaplus/AgentSkills](https://github.com/tlaplus/AgentSkills) on their own. The checker and the mapping file stay here, because they are the CI gate.
 
+Those two skills assume a spec already exists. The rest of the path, from a product conversation to a packet a coding agent can build, uses skills that already live elsewhere. The order, the install commands, and the handoff are in [docs/chain.md](docs/chain.md).
+
 ## Quick start
 
 ```bash
@@ -55,6 +57,7 @@ spec-test-contract/
 ├── scripts/check_coverage.py
 ├── examples/velocity-counter/
 ├── docs/mapping-format.md
+├── docs/chain.md
 └── .github/workflows/coverage.yml
 ```
 

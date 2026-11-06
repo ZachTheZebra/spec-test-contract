@@ -76,4 +76,6 @@ Use this shape so the formula, the config line, and the contract entry stay toge
 
 ## When this skill is the wrong tool
 
-A request to see whether the current mapping still matches the configs is `check-invariant-coverage`. A request to implement the counter, the store, or the service is the product repo's work. Come back here when that implementation changes a rule the spec should state.
+A request to see whether the current mapping still matches the configs is `check-invariant-coverage`. A request to implement the counter, the store, or the service is the product repo's work, done test-first with `tdd` at the placeholder names this skill just wrote. Come back here when that implementation changes a rule the spec should state.
+
+There is no module yet: use `tla-check` to write the first spec and config, or `tlaplus-from-source` when the code already exists. The behavior is a flow a person should judge on a chart: use `statechart`. The full path from a product conversation to the merge check is `docs/chain.md` in [spec-test-contract](https://github.com/ZachTheZebra/spec-test-contract/blob/main/docs/chain.md).

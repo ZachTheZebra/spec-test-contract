@@ -58,4 +58,6 @@ On a pass, the findings section is the `contract ok` line and any `PROPERTY` not
 
 ## When this skill is the wrong tool
 
-A request to change what the system should do, given a bug or a feature, is `update-spec-for-change`. Run this skill after that proposal has been written into the module, the config, and the mapping.
+A request to change what the system should do, given a bug or a feature, is `update-spec-for-change`. Run this skill after that proposal has been written into the module, the config, and the mapping. A missing test is written with `tdd` against the implementation, then this check is run again.
+
+The path from a product conversation to this check is `docs/chain.md` in [spec-test-contract](https://github.com/ZachTheZebra/spec-test-contract/blob/main/docs/chain.md).
